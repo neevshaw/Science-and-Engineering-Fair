@@ -1,4 +1,4 @@
-# Keypad Communication Aid (Science & Engineering Fair)
+# Science and Engineering Fair
 
 An Arduino-based assistive device for people who have difficulty speaking. Using a 16-key keypad and a small LCD, the user can show common phrases to people nearby, text a caregiver for help over a GSM cellular module, sound a buzzer to get attention, and set an alarm.
 
