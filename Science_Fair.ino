@@ -24,11 +24,11 @@ uRTCLib rtc(0x68);
 SerialGSM cell(2,3);
 
 
-String mes[8] = {"Yes", "No", "Maybe", "I am hungry", "I am thirsty", "I love you", "I am hot", "I am cold"}; 
-String texts[6] = {"Hello!", "I need help", "Please come quickly", "I fell down", "Thank you!", "I love you"}; 
-String phone = ""; 
+String mes[8] = {"Yes", "No", "Maybe", "I am hungry", "I am thirsty", "I love you", "I am hot", "I am cold"};
+String texts[6] = {"Hello!", "I need help", "Please come quickly", "I fell down", "Thank you!", "I love you"};
+String phone = "";
 String old_phone = "";
-String alarm_time = ""; 
+String alarm_time = "";
 String old_alarm_time = "";
 int mes_index = 0;
 int texts_index = 0;
@@ -49,9 +49,10 @@ char new_key;
 char phone_key;
 char alarm_key;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-byte deg[8] = {B01100, B10010, B10010, B01100, B00000, B00000, B00000, B00000}; 
+byte alarm_icon[8] = {B01100, B10010, B10010, B01100, B00000, B00000, B00000, B00000};
+
 void sendSMS() {
-  cell.Message(texts[texts_index].c_str()); 
+  cell.Message(texts[texts_index].c_str());
   cell.SendSMS();
 }
 
@@ -69,14 +70,14 @@ void display_time() {
   hour = int(rtc.hour());
   minute = int(rtc.minute());
   second = int(rtc.second());
-  
+
   if (hour > 12) {
     hour = hour - 12;
   }
   else if (hour == 0) {
     hour = 12;
   }
-  lcd.print(hour); 
+  lcd.print(hour);
   lcd.print(':');
   if (minute < 10) {
     lcd.print("0");
@@ -104,7 +105,7 @@ void setup() {
   pinMode(23, OUTPUT);
   URTCLIB_WIRE.begin();
   lcd.begin(16, 2);
-  lcd.createChar(0, deg);
+  lcd.createChar(0, alarm_icon);
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Loading...");
@@ -226,7 +227,7 @@ void loop() {
         back_phone = true;
         break;
       }
-    }                                                    
+    }
     if (!back_phone) {
       cell.Rcpt(phone.c_str());
       lcd.clear();
@@ -414,12 +415,13 @@ void loop() {
       }
       if (!back_alarm) {
         if (am == false && alarm_time.substring(0,2).toInt() > 0 && alarm_time.substring(0,2).toInt() < 12) {
-          alarm_time[0] = String(alarm_time.substring(0,2).toInt() + 12)[0];
-          alarm_time[1] = String(alarm_time.substring(0,2).toInt() + 12)[1];
+          String hour24 = String(alarm_time.substring(0,2).toInt() + 12);
+          alarm_time[0] = hour24[0];
+          alarm_time[1] = hour24[1];
         }
         else if (am == true && alarm_time.substring(0,2).toInt() == 12) {
-          alarm_time[0] = String(0)[0];
-          alarm_time[1] = String(0)[0];
+          alarm_time[0] = '0';
+          alarm_time[1] = '0';
         }
         lcd.clear();
         lcd.setCursor(0,0);
@@ -449,8 +451,8 @@ void loop() {
       old_alarm_time = "";
     }
     else {
-     noTone(23);
-     alarm_off = true;
+      noTone(23);
+      alarm_off = true;
     }
 
   }
